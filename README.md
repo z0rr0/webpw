@@ -1,2 +1,3 @@
-# webpw
+# WebPW
+
 Web password generator
