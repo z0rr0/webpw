@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="WePw is password generation service">
+    <meta name="author" content="thebestzorro@yandex.ru">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <title>WebPW</title>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm">
+                <h2>Password generator <a href="https://github.com/z0rr0/webpw" title="Go to GitHub">WebPW</a></h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <form>
+                    <div class="form-group row">
+                        <label for="length" class="col-sm-2 col-form-label">Length</label>
+                        <div class="col-sm-8">
+                            <select class="form-control" name="length" id="length">
+                                {{ $l := .R.Length}}
+                                {{range $i, $v := .F.Length}}<option value="{{$v}}"{{if eq $v $l}} selected{{end}}>{{$v}}</option>{{end}}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="number" class="col-sm-2 col-form-label">Number</label>
+                        <div class="col-sm-8">
+                            <select class="form-control" name="number" id="number">
+                                {{ $n := .R.Number}}
+                                {{range $i, $v := .F.Number}}<option value="{{$v}}"{{if eq $v $n}} selected{{end}}>{{$v}}</option>{{end}}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="number" class="col-sm-2 col-form-label">Type</label>
+                        <div class="col-sm-8">
+                            <select class="form-control" name="type" id="type">
+                                {{ $t := .R.Type}}
+                                {{range $k, $ii := .F.Types}}<option value="{{index $ii 0}}"{{if eq $t (index $ii 0)}} selected{{end}}>{{index $ii 1}}</option>{{end}}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" name="no_capitalize" type="checkbox" value="on" id="no_capitalize"{{if .R.NoCapitalize}} checked{{end}}>
+                        <label class="form-check-label" for="no_capitalize">
+                            Deny capital letters
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" name="vowels" type="checkbox" value="on" id="vowels"{{if not .R.NoVowels}} checked{{end}}>
+                        <label class="form-check-label" for="vowels">
+                            Allow vowels or numbers that might be mistaken for vowels
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" name="ambiguous" type="checkbox" value="on" id="ambiguous"{{if not .R.NoAmbiguous}} checked{{end}}>
+                        <label class="form-check-label" for="ambiguous">
+                            Allow use characters that could be confused by the user when printed
+                        </label>
+                    </div>
+                    <input type="submit" class="btn btn-primary" value="Submit">
+                </form>
+            </div>
+        </div>
+        <div class="row"><br></div>
+        <div class="row">
+            <div class="col-sm">
+                <div class="card">
+                    <div class="card-header">
+                        Generated passwords
+                    </div>
+                    <div class="card-body">
+                        <pre>
+{{range .R.Passwords}}{{.}}
+{{end}}
+                        </pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
