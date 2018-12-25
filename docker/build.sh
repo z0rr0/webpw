@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 BUILD_CONTAINER="golang:webpw"
-TAG="zorro/webpw"
+TAG="z0rr0/webpw"
 BIN_FILE="webpw.alpine"
 SCRIPT_DIR=`realpath $0 | xargs dirname`
 SOURCES=`realpath ${SCRIPT_DIR}/..`
