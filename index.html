@@ -11,17 +11,15 @@
 </head>
 <body>
     <div class="container">
-        <div class="row">
-            <div class="col-sm">
-                <h2>Password generator <a href="https://github.com/z0rr0/webpw" title="Go to GitHub">WebPW</a></h2>
-            </div>
-        </div>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">Password generator</a>
+        </nav>
         <div class="row">
             <div class="col-sm">
                 <form>
                     <div class="form-group row">
                         <label for="length" class="col-sm-2 col-form-label">Length</label>
-                        <div class="col-sm-8">
+                        <div class="col-sm-10">
                             <select class="form-control" name="length" id="length">
                                 {{ $l := .R.Length}}
                                 {{range $i, $v := .F.Length}}<option value="{{$v}}"{{if eq $v $l}} selected{{end}}>{{$v}}</option>{{end}}
@@ -30,7 +28,7 @@
                     </div>
                     <div class="form-group row">
                         <label for="number" class="col-sm-2 col-form-label">Number</label>
-                        <div class="col-sm-8">
+                        <div class="col-sm-10">
                             <select class="form-control" name="number" id="number">
                                 {{ $n := .R.Number}}
                                 {{range $i, $v := .F.Number}}<option value="{{$v}}"{{if eq $v $n}} selected{{end}}>{{$v}}</option>{{end}}
@@ -39,7 +37,7 @@
                     </div>
                     <div class="form-group row">
                         <label for="number" class="col-sm-2 col-form-label">Type</label>
-                        <div class="col-sm-8">
+                        <div class="col-sm-10">
                             <select class="form-control" name="type" id="type">
                                 {{ $t := .R.Type}}
                                 {{range $k, $ii := .F.Types}}<option value="{{index $ii 0}}"{{if eq $t (index $ii 0)}} selected{{end}}>{{index $ii 1}}</option>{{end}}
@@ -82,6 +80,14 @@
                         </pre>
                     </div>
                 </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <hr>
+                <small>
+                    <a href="https://github.com/z0rr0/webpw" title="WebPW on GitHub">WebPW on GitHub</a>
+                </small>
             </div>
         </div>
     </div>

@@ -160,6 +160,7 @@ func main() {
 
 // validate checks request data and initializes passwords generation.
 func validate(r *http.Request) (*Result, error) {
+	// default values
 	length := Length
 	number := Number
 	t := "0"

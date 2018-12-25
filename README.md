@@ -2,28 +2,28 @@
 
 Web password generator
 
+```bash
+Usage of ./webpw:
+  -host string
+        host (default "0.0.0.0")
+  -index string
+        HTML template file (default "index.html")
+  -port uint
+        port (default 30080)
+  -timeout uint
+        handling timeout, seconds (default 30)
+```
+
 ## Build
 
 ```bash
 go build
 ```
 
-Prepared docker image 
-
 Build docker image:
 
 ```bash
-# prepare custom golang image (with git)
-cd docker/golang
-docker build -t golang:webpw .
-
-# build binary file for alpine
-cd ..
-./build
-
-# build image
-cd ..
-docker build -t webpw -f docker/Dockerfile .
+bash docker/build.sh
 ```
 
 ## License
