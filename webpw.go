@@ -29,6 +29,10 @@ const (
 	MaxLength = 100
 	// MaxNumbers is limit of generated numbers.
 	MaxNumbers = 100
+
+	typeANS = "0"
+	typeAN  = "1"
+	typeA   = "2"
 )
 
 var (
@@ -37,9 +41,9 @@ var (
 	loggerInfo  = log.New(os.Stdout, "[INFO] ", log.Ldate|log.Ltime)
 	// Types is available types of passwords
 	Types = map[string]string{
-		"0": "alphabet symbols + numbers + special symbols",
-		"1": "alphabet symbols + numbers",
-		"2": "alphabet symbols",
+		typeANS: "alphabet symbols + numbers + special symbols",
+		typeAN:  "alphabet symbols + numbers",
+		typeA:   "alphabet symbols",
 	}
 )
 
@@ -90,55 +94,11 @@ func main() {
 		WriteTimeout:   tmt,
 		MaxHeaderBytes: 1 << 20, // 1MB
 	}
-	// form
-	formLength := make([]int, 95)
-	for i := 0; i < 95; i++ {
-		formLength[i] = i + 6
-	}
-	types := make([][2]string, 3)
-	for i := range types {
-		types[i] = [2]string{strconv.Itoa(i), Types[strconv.Itoa(i)]}
-	}
-	f := &Form{
-		Length: formLength,
-		Number: []int{5, 10, 15},
-		Types:  types,
-	}
+	f := prepareForm()
 	// there is only one handler
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		start, code := time.Now(), http.StatusOK
-		defer func() {
-			loggerInfo.Printf("%-5v %v\t%-12v\t%v",
-				r.Method,
-				code,
-				time.Since(start),
-				r.URL.String(),
-			)
-		}()
-		if r.URL.Path != "/" {
-			code = http.StatusNotFound
-			http.NotFound(w, r)
-			return
-		}
-		result, err := validate(r)
-		if err != nil {
-			loggerInfo.Println(err)
-			code = http.StatusBadRequest
-			http.Error(w, "Bad request", code)
-			return
-		}
-		data := &Data{
-			F: f,
-			R: result,
-		}
-		err = tpl.Execute(w, data)
-		if err != nil {
-			loggerError.Println(err)
-			code = http.StatusInternalServerError
-			http.Error(w, "Internal Server Error", code)
-		}
+		handler(w, r, tpl, f)
 	})
-
 	idleConnsClosed := make(chan struct{})
 	go func() {
 		sigint := make(chan os.Signal, 1)
@@ -163,7 +123,7 @@ func validate(r *http.Request) (*Result, error) {
 	// default values
 	length := Length
 	number := Number
-	t := "0"
+	t := typeANS
 	symbols := true
 	noNumerals := false
 	noCapitalize := false
@@ -203,9 +163,9 @@ func validate(r *http.Request) (*Result, error) {
 		}
 	}
 	switch t {
-	case "1": // alphabet symbols + numbers
+	case typeAN: // alphabet symbols + numbers
 		symbols = false
-	case "2": // alphabet symbols
+	case typeA: // alphabet symbols
 		noNumerals = true
 		symbols = false
 	}
@@ -243,4 +203,56 @@ func validate(r *http.Request) (*Result, error) {
 		Passwords:    pw.Passwords(),
 	}
 	return result, nil
+}
+
+// prepareForm creates html form data.
+func prepareForm() *Form {
+	formLength := make([]int, 95)
+	for i := 0; i < 95; i++ {
+		formLength[i] = i + 6
+	}
+	types := make([][2]string, 3)
+	for i := range types {
+		types[i] = [2]string{strconv.Itoa(i), Types[strconv.Itoa(i)]}
+	}
+	return &Form{
+		Length: formLength,
+		Number: []int{5, 10, 15},
+		Types:  types,
+	}
+}
+
+// handler handles incoming requests.
+func handler(w http.ResponseWriter, r *http.Request, tpl *template.Template, f *Form) {
+	start, code := time.Now(), http.StatusOK
+	defer func() {
+		loggerInfo.Printf("%-5v %v\t%-12v\t%v",
+			r.Method,
+			code,
+			time.Since(start),
+			r.URL.String(),
+		)
+	}()
+	if r.URL.Path != "/" {
+		code = http.StatusNotFound
+		http.NotFound(w, r)
+		return
+	}
+	result, err := validate(r)
+	if err != nil {
+		loggerInfo.Println(err)
+		code = http.StatusBadRequest
+		http.Error(w, "Bad request", code)
+		return
+	}
+	data := &Data{
+		F: f,
+		R: result,
+	}
+	err = tpl.Execute(w, data)
+	if err != nil {
+		loggerError.Println(err)
+		code = http.StatusInternalServerError
+		http.Error(w, "Internal Server Error", code)
+	}
 }
