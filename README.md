@@ -1,6 +1,6 @@
 # WebPW
 
-Web password generator
+Web password generator.
 
 ```bash
 Usage of ./webpw:
@@ -14,13 +14,15 @@ Usage of ./webpw:
         handling timeout, seconds (default 30)
 ```
 
+Based on [github.com/z0rr0/gopwgen/pwgen](https://github.com/z0rr0/gopwgen) package.
+
 ## Build
 
 ```bash
 go build
 ```
 
-Build docker image:
+Build docker [image](https://cloud.docker.com/repository/docker/z0rr0/webpw):
 
 ```bash
 bash docker/build.sh
