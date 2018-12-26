@@ -94,7 +94,7 @@ func main() {
 		WriteTimeout:   tmt,
 		MaxHeaderBytes: 1 << 20, // 1MB
 	}
-	f := prepareForm()
+	f := creteForm()
 	// there is only one handler
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		handler(w, r, tpl, f)
@@ -205,8 +205,8 @@ func validate(r *http.Request) (*Result, error) {
 	return result, nil
 }
 
-// prepareForm creates html form data.
-func prepareForm() *Form {
+// creteForm creates html form data.
+func creteForm() *Form {
 	formLength := make([]int, 95)
 	for i := 0; i < 95; i++ {
 		formLength[i] = i + 6
@@ -240,7 +240,7 @@ func handler(w http.ResponseWriter, r *http.Request, tpl *template.Template, f *
 	}
 	result, err := validate(r)
 	if err != nil {
-		loggerInfo.Println(err)
+		loggerError.Println(err)
 		code = http.StatusBadRequest
 		http.Error(w, "Bad request", code)
 		return

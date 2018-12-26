@@ -19,24 +19,27 @@ func Test(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	f := prepareForm()
+	f := creteForm()
 	testCases := []TestCase{
-		{"/", "", http.StatusOK},
-		{"/bad", "", http.StatusNotFound},
-		{"/", "length=12&number=2&type=0", http.StatusOK},
-		{"/", "length=12&number=2&type=bad", http.StatusOK},
-		{"/", "length=12&number=2&type=1", http.StatusOK},
-		{"/", "length=12&number=2&type=2", http.StatusOK},
-		{"/", "length=12&number=2&type=0&no_capitalize=on", http.StatusOK},
-		{"/", "length=12&number=2&type=0&vowels=on", http.StatusOK},
-		{"/", "length=12&number=2&type=0&ambiguous=on", http.StatusOK},
-		{"/", "length=12&number=2&type=0&ambiguous=on&o_capitalize=on&ambiguous=on", http.StatusOK},
-		{"/", "length=0&number=2&type=0", http.StatusOK},
-		{"/", "length=0&number=0&type=0", http.StatusOK},
+		{"/?", "", http.StatusOK},
+		{"/bad/?", "", http.StatusNotFound},
+		{"/?", "length=12&number=2&type=0", http.StatusOK},
+		{"/?", "length=12&number=2&type=bad", http.StatusOK},
+		{"/?", "length=12&number=2&type=1", http.StatusOK},
+		{"/?", "length=12&number=2&type=2", http.StatusOK},
+		{"/?", "length=12&number=2&type=0&no_capitalize=on", http.StatusOK},
+		{"/?", "length=12&number=2&type=0&vowels=on", http.StatusOK},
+		{"/?", "length=12&number=2&type=0&ambiguous=on", http.StatusOK},
+		{"/?", "length=12&number=2&type=0&ambiguous=on&o_capitalize=on&ambiguous=on", http.StatusOK},
+		{"/?", "length=0&number=2&type=0", http.StatusBadRequest},
+		{"/?", "length=0&number=0&type=0", http.StatusBadRequest},
+		{"/?", "length=bad&number=0&type=0", http.StatusBadRequest},
+		{"/?", "length=0&number=bad&type=0", http.StatusBadRequest},
+		{"/?", "length=bad&number=bad&type=0", http.StatusBadRequest},
 	}
 	for i, tc := range testCases {
 		w := httptest.NewRecorder()
-		r := httptest.NewRequest("GET", tc.URL, strings.NewReader(tc.Params))
+		r := httptest.NewRequest("GET", tc.URL + tc.Params, nil)
 		r.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 
 		handler(w, r, tpl, f)
